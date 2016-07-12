@@ -1,3 +1,14 @@
+// Returns a random number between min (inclusive) and max (exclusive)
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Superclass for Enemy and Player
 // imgURL parameter accepts a string location of the image sprite
 var Unit = function(imgURL, x, y) {
@@ -8,13 +19,13 @@ var Unit = function(imgURL, x, y) {
 
 // Enemies our player must avoid
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+    // Randomise the speed of the bug
+    this.speed = getRandomArbitrary(0.2, 1) * 300;
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    Unit.call(this, 'images/enemy-bug.png', -120, 60);
-    this.speed = 100;
+    // The bug will randomly start in one of the three lanes
+    var y = getRandomIntInclusive(1, 3) * 83 - 23;
+    
+    Unit.call(this, 'images/enemy-bug.png', -110, y);
 };
 
 Enemy.prototype = Object.create(Unit.prototype);
