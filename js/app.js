@@ -66,7 +66,7 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    Unit.call(this, 'images/char-boy.png', 202, 403);
+    Unit.call(this, 'images/char-boy.png', 202, 392);
 };
 
 Player.prototype = Object.create(Unit.prototype);
@@ -80,8 +80,24 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-Player.prototype.handleInput = function () {
+Player.prototype.handleInput = function(key) {
+    switch (key) {
+        case 'left':
+            this.x -= 101;
+            break;
+        case 'up':
+            this.y -= 83;
+            break;
+        case 'right':
+            this.x += 101;
+            break;
+        case 'down':
+            this.y += 83;
+            break;
+        default:
+            console.log('Key not allowed, please press arrow keys');
 
+    }
 };
 
 /*
