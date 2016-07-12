@@ -83,16 +83,24 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            this.x -= 101;
+            if (this.x > 0) {
+                this.x -= 101;
+            }
             break;
         case 'up':
-            this.y -= 83;
+            if (this.y > -23) {
+                this.y -= 83;
+            }
             break;
         case 'right':
-            this.x += 101;
+            if (this.x < 404) {
+                this.x += 101;
+            }
             break;
         case 'down':
-            this.y += 83;
+            if (this.y < 392) {
+                this.y += 83;
+            }
             break;
         default:
             console.log('Key not allowed, please press arrow keys');
@@ -116,7 +124,7 @@ var player = new Player();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
     var allowedKeys = {
         37: 'left',
         38: 'up',
