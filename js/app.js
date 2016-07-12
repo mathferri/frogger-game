@@ -1,3 +1,7 @@
+/*
+ * HELPER FUNCTIONS
+ */
+
 // Returns a random number between min (inclusive) and max (exclusive)
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
@@ -8,6 +12,10 @@ function getRandomArbitrary(min, max) {
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+/*
+ * CLASSES
+ */
 
 // Superclass for Enemy and Player
 // imgURL parameter accepts a string location of the image sprite
@@ -24,7 +32,7 @@ var Enemy = function() {
 
     // The bug will randomly start in one of the three lanes
     var y = getRandomIntInclusive(1, 3) * 83 - 23;
-    
+
     Unit.call(this, 'images/enemy-bug.png', -110, y);
 };
 
@@ -38,6 +46,15 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
+
+    // Instantiate a new bug every time an existing bug runs out of sight
+    if (this.x >= 505) {
+        allEnemies.push(new Enemy());
+
+        // Remove the out-of-sight bug from allEnemies array
+        var index = allEnemies.indexOf(this);
+        allEnemies.splice(index, 1);
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -67,11 +84,15 @@ Player.prototype.handleInput = function () {
 
 };
 
+/*
+ * CLASSES INSTANTIATION
+ */
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
-for (i = 0; i < 1; i++) {
+for (i = 0; i < 3; i++) {
     allEnemies.push(new Enemy());
 }
 var player = new Player();
