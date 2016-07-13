@@ -25,6 +25,10 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    var startGame = false;
+
+    var avatar = 'girl';
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -66,8 +70,7 @@ var Engine = (function(global) {
      */
     function init() {
         reset();
-        lastTime = Date.now();
-        main();
+        launchGame();
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -152,11 +155,12 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        player.render();
+        player.render(avatar);
     }
 
     function updateScore() {
         ctx.font = "30px Helvetica";
+        ctx.textAlign = "left";
         ctx.fillStyle = "#fff";
         ctx.fillText("Score: " + score, 15, 100);
     }
@@ -166,7 +170,37 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        ctx.font = "50px Helvetica";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.fillText("Classic Frogger", canvas.width / 2, 160);
+        ctx.font = "30px Helvetica";
+        ctx.fillText("Select your avatar:", canvas.width / 2, 250);
+        ctx.drawImage(Resources.get('images/char-horn-girl.png'), 101, 280);
+        ctx.font = "22px Helvetica";
+        ctx.textAlign = "left";
+        ctx.fillText("Press G", 106, 470);
+        ctx.drawImage(Resources.get('images/char-boy.png'), 303, 280);
+        ctx.fillText("Press B", 311, 470);
+        document.addEventListener('keyup', function(e) {
+            if (e.keyCode === 71) {
+                avatar = 'girl';
+                startGame = true;
+                launchGame();
+            }
+            if (e.keyCode === 66) {
+                avatar = 'boy';
+                startGame = true;
+                launchGame();
+            }
+        });
+    }
+
+    function launchGame() {
+        if (startGame === true) {
+            lastTime = Date.now();
+            main();
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -178,6 +212,7 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
+        'images/char-boy.png',
         'images/char-horn-girl.png'
     ]);
     Resources.onReady(init);

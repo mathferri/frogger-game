@@ -114,8 +114,12 @@ Player.prototype.update = function(dt) {
     }
 };
 
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+Player.prototype.render = function(avatar) {
+    if (avatar === 'girl') {
+        ctx.drawImage(Resources.get('images/char-horn-girl.png'), this.x, this.y);
+    } else if (avatar === 'boy') {
+        ctx.drawImage(Resources.get('images/char-boy.png'), this.x, this.y);
+    }
 };
 
 // Player movement.
