@@ -165,23 +165,31 @@ var Engine = (function(global) {
         ctx.fillText("Score: " + score, 15, 100);
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /* This function presents the player with a new game menu
+     * where she can choose which avatar she wants to play as.
      */
     function reset() {
+        // Heading text
         ctx.font = "50px Helvetica";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
         ctx.fillText("Classic Frogger", canvas.width / 2, 160);
+
+        // Avatar selection
         ctx.font = "30px Helvetica";
+        ctx.textAlign = "left";
         ctx.fillText("Select your avatar:", canvas.width / 2, 250);
+
+        // Girl?
         ctx.drawImage(Resources.get('images/char-horn-girl.png'), 101, 280);
         ctx.font = "22px Helvetica";
-        ctx.textAlign = "left";
         ctx.fillText("Press G", 106, 470);
+
+        // Boy?
         ctx.drawImage(Resources.get('images/char-boy.png'), 303, 280);
         ctx.fillText("Press B", 311, 470);
+
+        // Press G for girl and B for boy
         document.addEventListener('keyup', function(e) {
             if (e.keyCode === 71) {
                 avatar = 'girl';
@@ -196,6 +204,8 @@ var Engine = (function(global) {
         });
     }
 
+    /* Start the game when the avatar selection has been made.
+     */
     function launchGame() {
         if (startGame === true) {
             lastTime = Date.now();

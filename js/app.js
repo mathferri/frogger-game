@@ -115,6 +115,8 @@ Player.prototype.update = function(dt) {
 };
 
 Player.prototype.render = function(avatar) {
+    // Select a different avatar depending on
+    // the player's choice on the main start menu.
     if (avatar === 'girl') {
         ctx.drawImage(Resources.get('images/char-horn-girl.png'), this.x, this.y);
     } else if (avatar === 'boy') {
