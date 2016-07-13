@@ -26,7 +26,7 @@ var Engine = (function(global) {
         lastTime;
 
     var startGame = false;
-    var gameDuration = 6000;
+    var gameDuration = 6000; // in milliseconds
 
     var avatar = 'girl';
 
@@ -120,10 +120,6 @@ var Engine = (function(global) {
          * for the next time this function is called.
          */
         lastTime = now;
-
-        if (watch.time <= 50) {
-            endGame = true;
-        }
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
@@ -285,13 +281,27 @@ var Engine = (function(global) {
     }
 
     function stopGame() {
+        // Stop main() function
         cancelAnimationFrame(requestID);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        showScore(score);
+    }
+
+    function showScore(score) {
+        ctx.font = "40px Helvetica";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.fillText("Congratulations!", canvas.width / 2, 200);
+        ctx.fillText("Your score is: " + score, canvas.width / 2, 300);
     }
 
     function updateStopwatch() {
         ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
 
-        if (watch.time <= 50) {
+        if (watch.time <= 0) {
             watch.stop();
         }
     }
