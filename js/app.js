@@ -13,6 +13,9 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var startX = 202,
+    startY = 392;
+
 /*
  * CLASSES
  */
@@ -55,6 +58,12 @@ Enemy.prototype.update = function(dt) {
         var index = allEnemies.indexOf(this);
         allEnemies.splice(index, 1);
     }
+
+    // Handle collisions with player
+    if (this.x > player.x - 60 && this.x < player.x + 60 && this.y === player.y) {
+        player.x = startX;
+        player.y = startY;
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -66,7 +75,7 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    Unit.call(this, 'images/char-boy.png', 202, 392);
+    Unit.call(this, 'images/char-boy.png', startX, startY);
 };
 
 Player.prototype = Object.create(Unit.prototype);
