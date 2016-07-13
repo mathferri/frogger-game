@@ -86,7 +86,7 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    Unit.call(this, 'images/char-boy.png', startX, startY);
+    Unit.call(this, 'images/char-horn-girl.png', startX, startY);
 };
 
 
