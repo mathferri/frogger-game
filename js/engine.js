@@ -104,6 +104,9 @@ var Engine = (function(global) {
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
+        // Clear the canvas before updating it.
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
@@ -112,8 +115,9 @@ var Engine = (function(global) {
         updateScore();
         updateStopwatch();
 
-        if (watch.time <= 0) {
+        if (watch.time <= 50) {
             watch.stop();
+            cancelAnimationFrame(endGame);
         }
 
         /* Set our lastTime variable which is used to determine the time delta
@@ -124,7 +128,7 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        endGame = win.requestAnimationFrame(main);
     }
 
     /* This function does some initial setup that should only occur once,
