@@ -29,6 +29,64 @@ var Engine = (function(global) {
 
     var avatar = 'girl';
 
+    /* This Stopwatch object counts down the time from this.time
+     * down to 0 seconds. It also formats the time so that it
+     * displays in whole seconds rather than milliseconds.
+     * Code learned from Saad's video on YouTube:
+     * "Creating a Stopwatch in JavaScript with OOP"
+     * https://youtu.be/jRhB1IG7uAw
+     */
+    var Stopwatch = function() {
+        this.time = 6000; // 60 seconds
+        var interval;
+        var offset;
+
+        this.isRunning = false;
+
+        // This function is called every 10 milliseconds to update the time passed
+        function update() {
+            if (this.isRunning) {
+                this.time -= delta();
+                this.formattedTime = timeFormatter(this.time);
+                console.log(this.time);
+            }
+        }
+
+        // Delta time used to make time consistent
+        function delta() {
+            var now = Date.now();
+            var timePassed = now - offset;
+            offset = now;
+            return timePassed;
+        }
+
+        // Format the time to whole seconds
+        function timeFormatter(timeInMilliseconds) {
+            var time = new Date(timeInMilliseconds);
+            this.seconds = time.getSeconds();
+            return this.seconds;
+        }
+
+        // Start the stopwatch and update it every 10 milliseconds
+        this.start = function() {
+            if (!this.isRunning) {
+                var interval = setInterval(update.bind(this), 10);
+                offset = Date.now();
+                this.isRunning = true;
+            }
+        };
+
+        // This stops the watch onces it reaches 0 seconds
+        this.stop = function() {
+            clearInterval(interval);
+            interval = null;
+            this.time = 6000;
+            this.isRunning = false;
+        };
+    };
+
+    var watch = new Stopwatch();
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -52,6 +110,11 @@ var Engine = (function(global) {
         update(dt);
         render();
         updateScore();
+        updateStopwatch();
+
+        if (watch.time <= 0) {
+            watch.stop();
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -177,8 +240,8 @@ var Engine = (function(global) {
 
         // Avatar selection
         ctx.font = "30px Helvetica";
-        ctx.textAlign = "left";
         ctx.fillText("Select your avatar:", canvas.width / 2, 250);
+        ctx.textAlign = "left";
 
         // Girl?
         ctx.drawImage(Resources.get('images/char-horn-girl.png'), 101, 280);
@@ -209,8 +272,13 @@ var Engine = (function(global) {
     function launchGame() {
         if (startGame === true) {
             lastTime = Date.now();
+            watch.start();
             main();
         }
+    }
+
+    function updateStopwatch() {
+        ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
     }
 
     /* Go ahead and load all of the images we know we're going to need to

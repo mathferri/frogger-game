@@ -155,7 +155,7 @@ Player.prototype.handleInput = function(key) {
             }
             break;
         default:
-            console.log('Key not allowed, please press arrow keys');
+
 
     }
 };
