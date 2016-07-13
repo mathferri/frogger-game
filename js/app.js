@@ -13,6 +13,14 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Set the bounds of the platform
+var bounds = {
+    left: 0,
+    right: 404,
+    up: -23,
+    down: 392
+};
+
 // Player's starting location
 var startX = 202,
     startY = 392;
@@ -113,25 +121,25 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            if (this.x > 0 && down['37'] === false) {
+            if (this.x > bounds.left && down['37'] === false) {
                 this.x -= 101;
                 down['37'] = true;
             }
             break;
         case 'up':
-            if (this.y > -23 && down['38'] === false) {
+            if (this.y > bounds.up && down['38'] === false) {
                 this.y -= 83;
                 down['38'] = true;
             }
             break;
         case 'right':
-            if (this.x < 404 && down['39'] === false) {
+            if (this.x < bounds.right && down['39'] === false) {
                 this.x += 101;
                 down['39'] = true;
             }
             break;
         case 'down':
-            if (this.y < 392 && down['40'] === false) {
+            if (this.y < bounds.down && down['40'] === false) {
                 this.y += 83;
                 down['40'] = true;
             }
