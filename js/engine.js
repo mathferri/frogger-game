@@ -26,6 +26,7 @@ var Engine = (function(global) {
         lastTime;
 
     var startGame = false;
+    var gameDuration = 6000;
 
     var avatar = 'girl';
 
@@ -37,7 +38,7 @@ var Engine = (function(global) {
      * https://youtu.be/jRhB1IG7uAw
      */
     var Stopwatch = function() {
-        this.time = 6000; // 60 seconds
+        this.time = gameDuration;
         var interval;
         var offset;
 
@@ -80,7 +81,7 @@ var Engine = (function(global) {
         this.stop = function() {
             clearInterval(interval);
             interval = null;
-            this.time = 6000;
+            this.time = gameDuration;
             this.isRunning = false;
         };
     };
@@ -115,20 +116,19 @@ var Engine = (function(global) {
         updateScore();
         updateStopwatch();
 
-        if (watch.time <= 50) {
-            watch.stop();
-            cancelAnimationFrame(endGame);
-        }
-
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
         lastTime = now;
 
+        if (watch.time <= 50) {
+            endGame = true;
+        }
+
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        endGame = win.requestAnimationFrame(main);
+        requestID = win.requestAnimationFrame(main);
     }
 
     /* This function does some initial setup that should only occur once,
@@ -274,15 +274,26 @@ var Engine = (function(global) {
     /* Start the game when the avatar selection has been made.
      */
     function launchGame() {
-        if (startGame === true) {
+        if (startGame) {
             lastTime = Date.now();
             watch.start();
+
+            // Stop the game when countdown over
+            win.setTimeout(stopGame, gameDuration);
             main();
         }
     }
 
+    function stopGame() {
+        cancelAnimationFrame(requestID);
+    }
+
     function updateStopwatch() {
         ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
+
+        if (watch.time <= 50) {
+            watch.stop();
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
