@@ -291,9 +291,12 @@ var Engine = (function(global) {
         ctx.font = "45px Helvetica";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
-        ctx.fillText("Congratulations!", canvas.width / 2, 250);
+        ctx.fillText("Congratulations!", canvas.width / 2, 200);
         ctx.font = "35px Helvetica";
-        ctx.fillText("Your score is: " + score, canvas.width / 2, 350);
+        ctx.fillText("Your score is:", canvas.width / 2, 300);
+        ctx.fillStyle = "#008bc7";
+        ctx.font = "50px Helvetica";
+        ctx.fillText(score, canvas.width / 2, 400);
     }
 
     function updateStopwatch() {
