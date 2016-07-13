@@ -1,3 +1,46 @@
 body {
     text-align: center;
+    font: 22px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: #000;
+}
+
+li::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 0;
+  background: #000;
+  transition: width 0.3s ease;
+}
+
+li:hover::after {
+  width: 100%;
+}
+
+footer {
+    text-align: left;
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+#contact-details {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#github {
+    float: left;
+}
+
+#website {
+    float:right;
 }
