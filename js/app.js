@@ -60,7 +60,7 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Handle collisions with player
-    if (this.x > player.x - 60 && this.x < player.x + 60 && this.y === player.y) {
+    if (this.x > player.x - 65 && this.x < player.x + 65 && this.y === player.y) {
         player.x = startX;
         player.y = startY;
     }
@@ -82,7 +82,12 @@ Player.prototype = Object.create(Unit.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.update = function(dt) {
-
+    // If the player reaches the water,
+    // he wins and goes back to the starting position.
+    if (player.y === -23) {
+        player.x = startX;
+        player.y = startY;
+    }
 };
 
 Player.prototype.render = function() {
