@@ -1,4 +1,24 @@
 /*
+ * GAME VARIABLES
+ */
+var gameDuration = 6000; // in milliseconds
+var avatar = 'girl';
+
+// Set the bounds of the platform
+var bounds = {
+    left: 0,
+    right: 404,
+    up: -23,
+    down: 392
+};
+
+// Player's starting location
+var startX = 202,
+    startY = 392;
+
+var score = 0;
+
+/*
  * HELPER FUNCTIONS
  */
 
@@ -13,18 +33,6 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Set the bounds of the platform
-var bounds = {
-    left: 0,
-    right: 404,
-    up: -23,
-    down: 392
-};
-
-// Player's starting location
-var startX = 202,
-    startY = 392;
-
 // This variable is used to detect if a certain key
 // is currently being pressed down or not.
 var down = {
@@ -33,8 +41,6 @@ var down = {
     39: false,
     40: false
 };
-
-var score = 0;
 
 
 /*

@@ -26,9 +26,6 @@ var Engine = (function(global) {
         lastTime;
 
     var startGame = false;
-    var gameDuration = 6000; // in milliseconds
-
-    var avatar = 'girl';
 
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
@@ -291,11 +288,12 @@ var Engine = (function(global) {
     }
 
     function showScore(score) {
-        ctx.font = "40px Helvetica";
+        ctx.font = "45px Helvetica";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
-        ctx.fillText("Congratulations!", canvas.width / 2, 200);
-        ctx.fillText("Your score is: " + score, canvas.width / 2, 300);
+        ctx.fillText("Congratulations!", canvas.width / 2, 250);
+        ctx.font = "35px Helvetica";
+        ctx.fillText("Your score is: " + score, canvas.width / 2, 350);
     }
 
     function updateStopwatch() {
