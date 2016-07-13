@@ -278,6 +278,9 @@ var Engine = (function(global) {
     }
 
     function stopGame() {
+        // Stop watch
+        watch.stop();
+
         // Stop main() function
         cancelAnimationFrame(requestID);
 
