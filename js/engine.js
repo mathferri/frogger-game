@@ -47,6 +47,7 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
+        updateScore();
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -152,6 +153,12 @@ var Engine = (function(global) {
         });
 
         player.render();
+    }
+
+    function updateScore() {
+        ctx.font = "30px Helvetica";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("Score: " + score, 15, 100);
     }
 
     /* This function does nothing but it could have been a good place to

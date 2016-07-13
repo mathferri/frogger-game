@@ -34,6 +34,8 @@ var down = {
     40: false
 };
 
+var score = 0;
+
 
 /*
  * CLASSES
@@ -79,9 +81,10 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Handle collisions with player
-    if (this.x > player.x - 65 && this.x < player.x + 65 && this.y === player.y) {
+    if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
         player.x = startX;
         player.y = startY;
+        score = 0;
     }
 };
 
@@ -107,6 +110,7 @@ Player.prototype.update = function(dt) {
     if (player.y === -23) {
         player.x = startX;
         player.y = startY;
+        score += 100;
     }
 };
 
