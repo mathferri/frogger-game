@@ -13,8 +13,19 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Player's starting location
 var startX = 202,
     startY = 392;
+
+// This variable is used to detect if a certain key
+// is currently being pressed down or not.
+var down = {
+    37: false,
+    38: false,
+    39: false,
+    40: false
+};
+
 
 /*
  * CLASSES
@@ -78,6 +89,7 @@ var Player = function() {
     Unit.call(this, 'images/char-boy.png', startX, startY);
 };
 
+
 Player.prototype = Object.create(Unit.prototype);
 Player.prototype.constructor = Player;
 
@@ -94,26 +106,34 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Player movement.
+// down variable is used to detect if a key is currently pressed.
+// This prevents the ease-mode where the player could just
+// rush through the level by keeping the arrow key up pressed.
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            if (this.x > 0) {
+            if (this.x > 0 && down['37'] === false) {
                 this.x -= 101;
+                down['37'] = true;
             }
             break;
         case 'up':
-            if (this.y > -23) {
+            if (this.y > -23 && down['38'] === false) {
                 this.y -= 83;
+                down['38'] = true;
             }
             break;
         case 'right':
-            if (this.x < 404) {
+            if (this.x < 404 && down['39'] === false) {
                 this.x += 101;
+                down['39'] = true;
             }
             break;
         case 'down':
-            if (this.y < 392) {
+            if (this.y < 392 && down['40'] === false) {
                 this.y += 83;
+                down['40'] = true;
             }
             break;
         default:
@@ -121,6 +141,7 @@ Player.prototype.handleInput = function(key) {
 
     }
 };
+
 
 /*
  * CLASSES INSTANTIATION
@@ -147,4 +168,8 @@ document.addEventListener('keydown', function(e) {
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
+});
+
+document.addEventListener('keyup', function(e) {
+    down[e.keyCode] = false;
 });
