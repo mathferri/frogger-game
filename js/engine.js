@@ -25,8 +25,6 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    var requestID;
-
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
      * displays in whole seconds rather than milliseconds.
@@ -101,7 +99,7 @@ var Engine = (function(global) {
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
-        // Clear the canvas before updating it.
+        // Clear the canvas before updating it
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         /* Call our update/render functions, pass along the time delta to
@@ -117,6 +115,7 @@ var Engine = (function(global) {
          */
         lastTime = now;
 
+        // Stop the game when the countdown finishes
         if (watch.time <= 50) {
             startGame = false;
         }
@@ -125,7 +124,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         if (startGame) {
-            requestID = win.requestAnimationFrame(main);
+            win.requestAnimationFrame(main);
         } else {
             stopGame();
         }
@@ -290,17 +289,18 @@ var Engine = (function(global) {
         }
     }
 
+    /* This function stops the game, resets the stopwatch,
+     * clears the canvas and shows the scoreboard.
+     */
     function stopGame() {
         startGame = false;
         watch.reset();
-        cancelAnimationFrame(requestID);
-        requestID = null;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         showScore(score);
     }
 
     function showScore(score) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Wall of text!
         ctx.font = "45px Helvetica";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
@@ -314,6 +314,7 @@ var Engine = (function(global) {
         ctx.font = "30px Helvetica";
         ctx.fillText("Press SPACE to play again", canvas.width / 2, 450);
 
+        // Listen for spacebar input and start a new game
         document.addEventListener('keyup', function(e) {
             if (e.keyCode === 32) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -322,6 +323,9 @@ var Engine = (function(global) {
         });
     }
 
+    /* This function does not update the stopwatch object,
+     * it just updates the graphical representation on-screen.
+     */
     function updateStopwatch() {
         ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
     }
