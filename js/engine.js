@@ -309,6 +309,9 @@ var Engine = (function(global) {
     }
 
     function showScore(score) {
+        // Play tune!
+        gameOverSound.play();
+
         // Wall of text!
         ctx.font = "45px Helvetica";
         ctx.fillStyle = "#000";

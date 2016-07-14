@@ -64,6 +64,7 @@ var Sound = function(src) {
 var gameMusic = 'audio/chiptune.ogg';
 var collisionSound = new Sound('audio/collision.wav');
 var successSound = new Sound('audio/success.ogg');
+var gameOverSound = new Sound('audio/jingle.mp3');
 
 
 /*
