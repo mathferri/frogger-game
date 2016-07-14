@@ -92,7 +92,11 @@ Enemy.prototype.update = function(dt) {
     if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
         player.x = startX;
         player.y = startY;
-        score = 0;
+        if (score >= 500) {
+            score -= 500;
+        } else {
+            score = 0;
+        }
     }
 };
 
