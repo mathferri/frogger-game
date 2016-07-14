@@ -254,6 +254,10 @@ var Engine = (function(global) {
      * where she can choose which avatar she wants to play as.
      */
     function reset() {
+        // Reset music
+        music = new Sound('sounds/chiptune.ogg');
+        music.currentTime = 0;
+
         // Heading text
         ctx.font = "50px Helvetica";
         ctx.fillStyle = "#000";
@@ -290,6 +294,7 @@ var Engine = (function(global) {
     }
 
     /* Start the game when the avatar selection has been made.
+     * That's when the music starts playing!
      */
     function launchGame() {
         // Reset game variables
@@ -303,7 +308,6 @@ var Engine = (function(global) {
 
         if (startGame) {
             lastTime = Date.now();
-            music = new Sound('sounds/chiptune.ogg');
             music.play();
             watch.start();
             main();
