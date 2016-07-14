@@ -319,8 +319,8 @@ var Engine = (function(global) {
         ctx.fillText("Congratulations!", canvas.width / 2, 150);
         ctx.font = "35px Helvetica";
         ctx.fillText("Your score is:", canvas.width / 2, 250);
-        ctx.fillStyle = "#008bc7";
-        ctx.font = "50px Helvetica";
+        ctx.fillStyle = "#ec3434";
+        ctx.font = "bold 50px Helvetica";
         ctx.fillText(score, canvas.width / 2, 350);
         ctx.fillStyle = "#000";
         ctx.font = "30px Helvetica";
