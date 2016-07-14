@@ -82,6 +82,25 @@ var Engine = (function(global) {
 
     var watch = new Stopwatch();
 
+    /* Basic Sound object without controls
+     */
+    var Sound = function(src) {
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none";
+        document.body.appendChild(this.sound);
+        this.play = function(){
+            this.sound.play();
+        };
+        this.stop = function(){
+            this.sound.pause();
+        };
+    };
+
+    var music;
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -284,17 +303,20 @@ var Engine = (function(global) {
 
         if (startGame) {
             lastTime = Date.now();
+            music = new Sound('sounds/chiptune.ogg');
+            music.play();
             watch.start();
             main();
         }
     }
 
     /* This function stops the game, resets the stopwatch,
-     * clears the canvas and shows the scoreboard.
+     * clears the canvas, stops the music and shows the scoreboard.
      */
     function stopGame() {
         startGame = false;
         watch.reset();
+        music.stop();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         showScore(score);
     }

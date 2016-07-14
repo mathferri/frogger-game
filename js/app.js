@@ -1,7 +1,7 @@
 /*
  * GAME VARIABLES
  */
-var gameDuration = 3000; // in milliseconds
+var gameDuration = 30000; // in milliseconds
 var avatar = 'girl';
 
 // Set the bounds of the platform
