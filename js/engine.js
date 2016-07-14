@@ -25,7 +25,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    var startGame = false;
+    var requestID;
 
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
@@ -46,7 +46,6 @@ var Engine = (function(global) {
             if (this.isRunning) {
                 this.time -= delta();
                 this.formattedTime = timeFormatter(this.time);
-                console.log(this.time);
             }
         }
 
@@ -75,7 +74,7 @@ var Engine = (function(global) {
         };
 
         // This stops the watch onces it reaches 0 seconds
-        this.stop = function() {
+        this.reset = function() {
             clearInterval(interval);
             interval = null;
             this.time = gameDuration;
@@ -118,10 +117,18 @@ var Engine = (function(global) {
          */
         lastTime = now;
 
+        if (watch.time <= 50) {
+            startGame = false;
+        }
+
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        requestID = win.requestAnimationFrame(main);
+        if (startGame) {
+            requestID = win.requestAnimationFrame(main);
+        } else {
+            stopGame();
+        }
     }
 
     /* This function does some initial setup that should only occur once,
@@ -267,47 +274,56 @@ var Engine = (function(global) {
     /* Start the game when the avatar selection has been made.
      */
     function launchGame() {
+        // Reset game variables
+        score = 0;
+        player.x = startX;
+        player.y = startY;
+        allEnemies = [];
+        for (i = 0; i < 3; i++) {
+            allEnemies.push(new Enemy());
+        }
+
         if (startGame) {
             lastTime = Date.now();
             watch.start();
-
-            // Stop the game when countdown over
-            win.setTimeout(stopGame, gameDuration);
             main();
         }
     }
 
     function stopGame() {
-        // Stop watch
-        watch.stop();
-
-        // Stop main() function
+        startGame = false;
+        watch.reset();
         cancelAnimationFrame(requestID);
-
-        // Clear the canvas
+        requestID = null;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         showScore(score);
     }
 
     function showScore(score) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.font = "45px Helvetica";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
-        ctx.fillText("Congratulations!", canvas.width / 2, 200);
+        ctx.fillText("Congratulations!", canvas.width / 2, 150);
         ctx.font = "35px Helvetica";
-        ctx.fillText("Your score is:", canvas.width / 2, 300);
+        ctx.fillText("Your score is:", canvas.width / 2, 250);
         ctx.fillStyle = "#008bc7";
         ctx.font = "50px Helvetica";
-        ctx.fillText(score, canvas.width / 2, 400);
+        ctx.fillText(score, canvas.width / 2, 350);
+        ctx.fillStyle = "#000";
+        ctx.font = "30px Helvetica";
+        ctx.fillText("Press SPACE to play again", canvas.width / 2, 450);
+
+        document.addEventListener('keyup', function(e) {
+            if (e.keyCode === 32) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                reset();
+            }
+        });
     }
 
     function updateStopwatch() {
         ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
-
-        if (watch.time <= 0) {
-            watch.stop();
-        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to

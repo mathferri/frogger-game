@@ -1,7 +1,7 @@
 /*
  * GAME VARIABLES
  */
-var gameDuration = 3000; // in milliseconds
+var gameDuration = 5000; // in milliseconds
 var avatar = 'girl';
 
 // Set the bounds of the platform
@@ -17,6 +17,8 @@ var startX = 202,
     startY = 392;
 
 var score = 0;
+
+var startGame = false;
 
 /*
  * HELPER FUNCTIONS
@@ -137,25 +139,25 @@ Player.prototype.render = function(avatar) {
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            if (this.x > bounds.left && down['37'] === false) {
+            if (this.x > bounds.left && down['37'] === false && startGame) {
                 this.x -= 101;
                 down['37'] = true;
             }
             break;
         case 'up':
-            if (this.y > bounds.up && down['38'] === false) {
+            if (this.y > bounds.up && down['38'] === false && startGame) {
                 this.y -= 83;
                 down['38'] = true;
             }
             break;
         case 'right':
-            if (this.x < bounds.right && down['39'] === false) {
+            if (this.x < bounds.right && down['39'] === false && startGame) {
                 this.x += 101;
                 down['39'] = true;
             }
             break;
         case 'down':
-            if (this.y < bounds.down && down['40'] === false) {
+            if (this.y < bounds.down && down['40'] === false && startGame) {
                 this.y += 83;
                 down['40'] = true;
             }
