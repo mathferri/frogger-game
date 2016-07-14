@@ -45,6 +45,27 @@ var down = {
 };
 
 
+// Basic Sound object without controls
+var Sound = function(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    };
+    this.stop = function(){
+        this.sound.pause();
+    };
+};
+
+var gameMusic = 'audio/chiptune.ogg';
+var collisionSound = new Sound('audio/collision.wav');
+var successSound = new Sound('audio/success.ogg');
+
+
 /*
  * CLASSES
  */
@@ -90,6 +111,7 @@ Enemy.prototype.update = function(dt) {
 
     // Handle collisions with player
     if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
+        collisionSound.play();
         player.x = startX;
         player.y = startY;
         if (score >= 500) {
@@ -120,6 +142,7 @@ Player.prototype.update = function(dt) {
     // If the player reaches the water,
     // he wins and goes back to the starting position.
     if (player.y === -23) {
+        successSound.play();
         player.x = startX;
         player.y = startY;
         score += 100;

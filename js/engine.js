@@ -82,23 +82,6 @@ var Engine = (function(global) {
 
     var watch = new Stopwatch();
 
-    /* Basic Sound object without controls
-     */
-    var Sound = function(src) {
-        this.sound = document.createElement("audio");
-        this.sound.src = src;
-        this.sound.setAttribute("preload", "auto");
-        this.sound.setAttribute("controls", "none");
-        this.sound.style.display = "none";
-        document.body.appendChild(this.sound);
-        this.play = function(){
-            this.sound.play();
-        };
-        this.stop = function(){
-            this.sound.pause();
-        };
-    };
-
     var music;
 
     canvas.width = 505;
@@ -255,7 +238,7 @@ var Engine = (function(global) {
      */
     function reset() {
         // Reset music
-        music = new Sound('sounds/chiptune.ogg');
+        music = new Sound(gameMusic);
         music.currentTime = 0;
 
         // Heading text
