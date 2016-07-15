@@ -25,6 +25,8 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    var gameOverScreen = false;
+
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
      * displays in whole seconds rather than milliseconds.
@@ -306,12 +308,12 @@ var Engine = (function(global) {
 
         // Press G for girl and B for boy
         document.addEventListener('keyup', function(e) {
-            if (e.keyCode === 71) {
+            if (e.keyCode === 71 && !startGame && !gameOverScreen) {
                 avatar = 'girl';
                 startGame = true;
                 launchGame();
             }
-            if (e.keyCode === 66) {
+            if (e.keyCode === 66 && !startGame && !gameOverScreen) {
                 avatar = 'boy';
                 startGame = true;
                 launchGame();
@@ -347,6 +349,7 @@ var Engine = (function(global) {
      */
     function stopGame() {
         startGame = false;
+        gameOverScreen = true;
         watch.reset();
         music.stop();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -364,7 +367,7 @@ var Engine = (function(global) {
         ctx.fillText("Congratulations!", canvas.width / 2, 150);
         ctx.font = "35px Helvetica";
         ctx.fillText("Your score is:", canvas.width / 2, 250);
-        ctx.fillStyle = "#008cff";
+        ctx.fillStyle = "#c14f48";
         ctx.font = "bold 50px Helvetica";
         ctx.fillText(score, canvas.width / 2, 350);
         ctx.fillStyle = "#000";
@@ -374,6 +377,7 @@ var Engine = (function(global) {
         // Listen for spacebar input and start a new game
         document.addEventListener('keyup', function(e) {
             if (e.keyCode === 32) {
+                gameOverScreen = false;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 reset();
             }
