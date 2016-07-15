@@ -24,14 +24,6 @@ var collisionCoordinates = [];
 var collisionWithEnemy = false,
     collisionWithWater = false;
 
-function noCollisionWithEnemy() {
-    collisionWithEnemy = false;
-}
-
-function noCollisionWithWater() {
-    collisionWithWater = false;
-}
-
 /*
  * HELPER FUNCTIONS
  */
@@ -125,7 +117,7 @@ Enemy.prototype.update = function(dt) {
     // Handle collisions with player
     if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
         collisionWithEnemy = true;
-        collisionCoordinates.push({x: player.x+20, y: player.y+120, isOnScreen: false});
+        collisionCoordinates.push({x: player.x+20, y: player.y+120});
         collisionSound.play();
         player.x = startX;
         player.y = startY;

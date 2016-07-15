@@ -161,7 +161,7 @@ var Engine = (function(global) {
     function checkCollisions(coordinates) {
         if (coordinates) {
             coordinates.forEach(function(values, index) {
-                if (coordinates[index].isOnScreen === false) {
+                if (values) {
                     var x = coordinates[index].x,
                         y = coordinates[index].y;
                     if (collisionWithEnemy) {
@@ -171,7 +171,6 @@ var Engine = (function(global) {
                         collisionsStack.push({target: 'water', x: x, y: y});
                         collisionWithWater = false;
                     }
-                    coordinates[index].isOnScreen = true;
                 }
             });
         }
@@ -179,16 +178,24 @@ var Engine = (function(global) {
 
     function renderCollisions() {
         collisionsStack.forEach(function(values, index) {
-            if (collisionsStack[index].target === 'enemy') {
-                ctx.font = "bold 30px Helvetica";
-                ctx.fillStyle = "#b30000";
-                ctx.fillText('-500', collisionsStack[index].x, collisionsStack[index].y);
-            } else if (collisionsStack[index].target === 'water') {
-                ctx.font = "bold 30px Helvetica";
-                ctx.fillStyle = "#fff";
-                ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y);
+            if (values) {
+                setTimeout(removeCollision.bind(null, index), 700);
+                if (collisionsStack[index].target === 'enemy') {
+                    ctx.font = "bold 30px Helvetica";
+                    ctx.fillStyle = "#b30000";
+                    ctx.fillText('-500', collisionsStack[index].x, collisionsStack[index].y);
+                } else if (collisionsStack[index].target === 'water') {
+                    ctx.font = "bold 30px Helvetica";
+                    ctx.fillStyle = "#fff";
+                    ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y);
+                }
             }
         });
+    }
+
+    function removeCollision(index) {
+        collisionsStack[index] = null;
+        collisionCoordinates[index] = null;
     }
 
     /* This is called by the update function and loops through all of the
@@ -324,6 +331,8 @@ var Engine = (function(global) {
         for (i = 0; i < 3; i++) {
             allEnemies.push(new Enemy());
         }
+        collisionsStack = [];
+        collisionCoordinates = [];
 
         if (startGame) {
             lastTime = Date.now();
