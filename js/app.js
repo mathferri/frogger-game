@@ -17,8 +17,20 @@ var startX = 202,
     startY = 392;
 
 var score = 0;
-
 var startGame = false;
+
+var collisionCoordinates = [];
+
+var collisionWithEnemy = false,
+    collisionWithWater = false;
+
+function noCollisionWithEnemy() {
+    collisionWithEnemy = false;
+}
+
+function noCollisionWithWater() {
+    collisionWithWater = false;
+}
 
 /*
  * HELPER FUNCTIONS
@@ -112,6 +124,8 @@ Enemy.prototype.update = function(dt) {
 
     // Handle collisions with player
     if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
+        collisionWithEnemy = true;
+        collisionCoordinates.push({x: player.x+20, y: player.y+120, isOnScreen: false});
         collisionSound.play();
         player.x = startX;
         player.y = startY;
@@ -143,6 +157,8 @@ Player.prototype.update = function(dt) {
     // If the player reaches the water,
     // he wins and goes back to the starting position.
     if (player.y === -23) {
+        collisionWithWater = true;
+        collisionCoordinates.push({x: player.x+20, y: player.y+120, isOnScreen: false});
         successSound.play();
         player.x = startX;
         player.y = startY;

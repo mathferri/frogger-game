@@ -111,6 +111,8 @@ var Engine = (function(global) {
         render();
         updateScore();
         updateStopwatch();
+        checkCollisions(collisionCoordinates);
+        renderCollisions();
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -152,7 +154,41 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+    }
+
+    var collisionsStack = [];
+
+    function checkCollisions(coordinates) {
+        if (coordinates) {
+            coordinates.forEach(function(values, index) {
+                if (coordinates[index].isOnScreen === false) {
+                    var x = coordinates[index].x,
+                        y = coordinates[index].y;
+                    if (collisionWithEnemy) {
+                        collisionsStack.push({target: 'enemy', x: x, y: y});
+                        collisionWithEnemy = false;
+                    } else if (collisionWithWater) {
+                        collisionsStack.push({target: 'water', x: x, y: y});
+                        collisionWithWater = false;
+                    }
+                    coordinates[index].isOnScreen = true;
+                }
+            });
+        }
+    }
+
+    function renderCollisions() {
+        collisionsStack.forEach(function(values, index) {
+            if (collisionsStack[index].target === 'enemy') {
+                ctx.font = "bold 30px Helvetica";
+                ctx.fillStyle = "#b30000";
+                ctx.fillText('-500', collisionsStack[index].x, collisionsStack[index].y);
+            } else if (collisionsStack[index].target === 'water') {
+                ctx.font = "bold 30px Helvetica";
+                ctx.fillStyle = "#fff";
+                ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y);
+            }
+        });
     }
 
     /* This is called by the update function and loops through all of the
@@ -229,8 +265,8 @@ var Engine = (function(global) {
     function updateScore() {
         ctx.font = "30px Helvetica";
         ctx.textAlign = "left";
-        ctx.fillStyle = "#fff";
-        ctx.fillText("Score: " + score, 15, 100);
+        ctx.fillStyle = "#000";
+        ctx.fillText("Score: " + score, 0, 30);
     }
 
     /* This function presents the player with a new game menu
@@ -319,7 +355,7 @@ var Engine = (function(global) {
         ctx.fillText("Congratulations!", canvas.width / 2, 150);
         ctx.font = "35px Helvetica";
         ctx.fillText("Your score is:", canvas.width / 2, 250);
-        ctx.fillStyle = "#ec3434";
+        ctx.fillStyle = "#008cff";
         ctx.font = "bold 50px Helvetica";
         ctx.fillText(score, canvas.width / 2, 350);
         ctx.fillStyle = "#000";
@@ -339,7 +375,7 @@ var Engine = (function(global) {
      * it just updates the graphical representation on-screen.
      */
     function updateStopwatch() {
-        ctx.fillText("Time left: " + watch.formattedTime, 320, 100);
+        ctx.fillText("Time left: " + watch.formattedTime, 335, 30);
     }
 
     /* Go ahead and load all of the images we know we're going to need to
