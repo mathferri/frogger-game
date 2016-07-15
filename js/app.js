@@ -1,7 +1,7 @@
 /*
  * GAME VARIABLES
  */
-var gameDuration = 3000; // in milliseconds
+var gameDuration = 30000; // in milliseconds
 var avatar = 'girl';
 
 // Set the bounds of the platform
@@ -117,7 +117,7 @@ Enemy.prototype.update = function(dt) {
     // Handle collisions with player
     if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
         collisionWithEnemy = true;
-        collisionCoordinates.push({x: player.x+20, y: player.y+120});
+        collisionCoordinates.push({x: player.x+12, y: player.y+120});
         collisionSound.play();
         player.x = startX;
         player.y = startY;
@@ -150,7 +150,7 @@ Player.prototype.update = function(dt) {
     // he wins and goes back to the starting position.
     if (player.y === -23) {
         collisionWithWater = true;
-        collisionCoordinates.push({x: player.x+20, y: player.y+120, isOnScreen: false});
+        collisionCoordinates.push({x: player.x+12, y: player.y+120});
         successSound.play();
         player.x = startX;
         player.y = startY;

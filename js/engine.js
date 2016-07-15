@@ -114,7 +114,7 @@ var Engine = (function(global) {
         updateScore();
         updateStopwatch();
         checkCollisions(collisionCoordinates);
-        renderCollisions();
+        renderCollisions(dt);
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -178,18 +178,20 @@ var Engine = (function(global) {
         }
     }
 
-    function renderCollisions() {
+    function renderCollisions(dt) {
         collisionsStack.forEach(function(values, index) {
             if (values) {
-                setTimeout(removeCollision.bind(null, index), 700);
+                setTimeout(removeCollision.bind(null, index), 600);
                 if (collisionsStack[index].target === 'enemy') {
                     ctx.font = "bold 30px Helvetica";
                     ctx.fillStyle = "#b30000";
                     ctx.fillText('-500', collisionsStack[index].x, collisionsStack[index].y);
+                    collisionsStack[index].y += 100 * dt;
                 } else if (collisionsStack[index].target === 'water') {
                     ctx.font = "bold 30px Helvetica";
                     ctx.fillStyle = "#fff";
-                    ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y);
+                    ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y + 50);
+                    collisionsStack[index].y -= 100 * dt;
                 }
             }
         });
