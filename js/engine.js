@@ -28,6 +28,10 @@ var Engine = (function(global) {
         gameOverScreenIsOn = false,
         collisionsStack = [];
 
+    canvas.width = 505;
+    canvas.height = 606;
+    doc.body.appendChild(canvas);
+
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
      * displays in whole seconds rather than milliseconds.
@@ -68,7 +72,7 @@ var Engine = (function(global) {
         // Start the stopwatch and update it every 10 milliseconds
         this.start = function() {
             if (!this.isRunning) {
-                var interval = setInterval(update.bind(this), 10);
+                interval = setInterval(update.bind(this), 10);
                 offset = Date.now();
                 this.isRunning = true;
             }
@@ -84,10 +88,6 @@ var Engine = (function(global) {
     };
 
     var watch = new Stopwatch();
-
-    canvas.width = 505;
-    canvas.height = 606;
-    doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.

@@ -1,7 +1,7 @@
 /*
  * GAME PARAMETERS
  */
-var gameDuration = 5000,
+var gameDuration = 30000,
     enemy = {
         speed: 300,
         hitbox: 70
