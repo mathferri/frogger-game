@@ -23,9 +23,10 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
-
-    var gameOverScreen = false;
+        lastTime,
+        music,
+        gameOverScreenIsOn = false,
+        collisionsStack = [];
 
     /* This Stopwatch object counts down the time from this.time
      * down to 0 seconds. It also formats the time so that it
@@ -84,8 +85,6 @@ var Engine = (function(global) {
 
     var watch = new Stopwatch();
 
-    var music;
-
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -103,8 +102,9 @@ var Engine = (function(global) {
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
-        // Clear the canvas before updating it
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        /* Clear the canvas before updating it
+         */
+        clearCanvas();
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -123,13 +123,13 @@ var Engine = (function(global) {
 
         // Stop the game when the countdown finishes
         if (watch.time <= 50) {
-            startGame = false;
+            gameHasStarted = false;
         }
 
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        if (startGame) {
+        if (gameHasStarted) {
             win.requestAnimationFrame(main);
         } else {
             stopGame();
@@ -158,48 +158,8 @@ var Engine = (function(global) {
         updateEntities(dt);
     }
 
-    var collisionsStack = [];
-
-    function checkCollisions(coordinates) {
-        if (coordinates) {
-            coordinates.forEach(function(values, index) {
-                if (values) {
-                    var x = coordinates[index].x,
-                        y = coordinates[index].y;
-                    if (collisionWithEnemy) {
-                        collisionsStack.push({target: 'enemy', x: x, y: y});
-                        collisionWithEnemy = false;
-                    } else if (collisionWithWater) {
-                        collisionsStack.push({target: 'water', x: x, y: y});
-                        collisionWithWater = false;
-                    }
-                }
-            });
-        }
-    }
-
-    function renderCollisions(dt) {
-        collisionsStack.forEach(function(values, index) {
-            if (values) {
-                setTimeout(removeCollision.bind(null, index), 600);
-                if (collisionsStack[index].target === 'enemy') {
-                    ctx.font = "bold 30px Helvetica";
-                    ctx.fillStyle = "#b30000";
-                    ctx.fillText('-500', collisionsStack[index].x, collisionsStack[index].y);
-                    collisionsStack[index].y += 100 * dt;
-                } else if (collisionsStack[index].target === 'water') {
-                    ctx.font = "bold 30px Helvetica";
-                    ctx.fillStyle = "#fff";
-                    ctx.fillText('+100', collisionsStack[index].x, collisionsStack[index].y + 50);
-                    collisionsStack[index].y -= 100 * dt;
-                }
-            }
-        });
-    }
-
-    function removeCollision(index) {
-        collisionsStack[index] = null;
-        collisionCoordinates[index] = null;
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     /* This is called by the update function and loops through all of the
@@ -280,6 +240,52 @@ var Engine = (function(global) {
         ctx.fillText("Score: " + score, 0, 30);
     }
 
+    function updateStopwatch() {
+        ctx.fillText("Time left: " + watch.formattedTime, 335, 30);
+    }
+
+    function checkCollisions(coordinates) {
+        if (coordinates) {
+            coordinates.forEach(function(values, index) {
+                if (values) {
+                    var x = coordinates[index].x,
+                        y = coordinates[index].y;
+                    if (collisionWithEnemy) {
+                        collisionsStack.push({target: 'enemy', x: x, y: y});
+                        collisionWithEnemy = false;
+                    } else if (collisionWithWater) {
+                        collisionsStack.push({target: 'water', x: x, y: y});
+                        collisionWithWater = false;
+                    }
+                }
+            });
+        }
+    }
+
+    function renderCollisions(dt) {
+        collisionsStack.forEach(function(values, index) {
+            if (values) {
+                setTimeout(removeCollision.bind(null, index), 600);
+                if (collisionsStack[index].target === 'enemy') {
+                    ctx.font = typography.floatingScores;
+                    ctx.fillStyle = colours.minusScore;
+                    ctx.fillText(floatingScores.enemy.toString(), collisionsStack[index].x, collisionsStack[index].y);
+                    collisionsStack[index].y += 100 * dt;
+                } else if (collisionsStack[index].target === 'water') {
+                    ctx.font = typography.floatingScores;
+                    ctx.fillStyle = colours.plusScore;
+                    ctx.fillText('+' + floatingScores.water.toString(), collisionsStack[index].x, collisionsStack[index].y + 50);
+                    collisionsStack[index].y -= 100 * dt;
+                }
+            }
+        });
+    }
+
+    function removeCollision(index) {
+        collisionsStack[index] = null;
+        collisionCoordinates[index] = null;
+    }
+
     /* This function presents the player with a new game menu
      * where she can choose which avatar she wants to play as.
      */
@@ -310,14 +316,14 @@ var Engine = (function(global) {
 
         // Press G for girl and B for boy
         document.addEventListener('keyup', function(e) {
-            if (e.keyCode === 71 && !startGame && !gameOverScreen) {
+            if (e.keyCode === 71 && !gameHasStarted && !gameOverScreenIsOn) {
                 avatar = 'girl';
-                startGame = true;
+                gameHasStarted = true;
                 launchGame();
             }
-            if (e.keyCode === 66 && !startGame && !gameOverScreen) {
+            if (e.keyCode === 66 && !gameHasStarted && !gameOverScreenIsOn) {
                 avatar = 'boy';
-                startGame = true;
+                gameHasStarted = true;
                 launchGame();
             }
         });
@@ -329,8 +335,8 @@ var Engine = (function(global) {
     function launchGame() {
         // Reset game variables
         score = 0;
-        player.x = startX;
-        player.y = startY;
+        player.x = playerStartLocation.x;
+        player.y = playerStartLocation.y;
         allEnemies = [];
         for (i = 0; i < 3; i++) {
             allEnemies.push(new Enemy());
@@ -338,7 +344,7 @@ var Engine = (function(global) {
         collisionsStack = [];
         collisionCoordinates = [];
 
-        if (startGame) {
+        if (gameHasStarted) {
             lastTime = Date.now();
             music.play();
             watch.start();
@@ -350,11 +356,11 @@ var Engine = (function(global) {
      * clears the canvas, stops the music and shows the scoreboard.
      */
     function stopGame() {
-        startGame = false;
-        gameOverScreen = true;
+        gameHasStarted = false;
+        gameOverScreenIsOn = true;
         watch.reset();
         music.stop();
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        clearCanvas();
         showScore(score);
     }
 
@@ -369,8 +375,8 @@ var Engine = (function(global) {
         ctx.fillText("Congratulations!", canvas.width / 2, 150);
         ctx.font = "35px Helvetica";
         ctx.fillText("Your score is:", canvas.width / 2, 250);
-        ctx.fillStyle = "#c14f48";
-        ctx.font = "bold 50px Helvetica";
+        ctx.fillStyle = colours.finalScore;
+        ctx.font = typography.finalScore;
         ctx.fillText(score, canvas.width / 2, 350);
         ctx.fillStyle = "#000";
         ctx.font = "30px Helvetica";
@@ -379,18 +385,11 @@ var Engine = (function(global) {
         // Listen for spacebar input and start a new game
         document.addEventListener('keyup', function(e) {
             if (e.keyCode === 32) {
-                gameOverScreen = false;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                gameOverScreenIsOn = false;
+                clearCanvas();
                 reset();
             }
         });
-    }
-
-    /* This function does not update the stopwatch object,
-     * it just updates the graphical representation on-screen.
-     */
-    function updateStopwatch() {
-        ctx.fillText("Time left: " + watch.formattedTime, 335, 30);
     }
 
     /* Go ahead and load all of the images we know we're going to need to

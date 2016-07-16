@@ -1,31 +1,59 @@
 /*
- * GAME VARIABLES
+ * GAME PARAMETERS
  */
-var gameDuration = 30000; // in milliseconds
-var avatar = 'girl';
-
-// Set the bounds of the platform
-var bounds = {
-    left: 0,
-    right: 404,
-    up: -23,
-    down: 392
-};
-
-// Player's starting location
-var startX = 202,
-    startY = 392;
-
-var score = 0;
-var startGame = false;
-
-var collisionCoordinates = [];
-
-var collisionWithEnemy = false,
-    collisionWithWater = false;
+var gameDuration = 5000,
+    enemy = {
+        speed: 300,
+        hitbox: 70
+    },
+    colours = {
+        finalScore: "#eb3126",
+        minusScore: "#b30000",
+        plusScore: "#fff"
+    },
+    typography = {
+        finalScore: "bold 50px Helvetica",
+        floatingScores: "bold 30px Helvetica"
+    },
+    floatingScores = {
+        enemy: -500,
+        water: +100
+    },
+    url = {
+        enemy: 'images/enemy-bug.png',
+        player: 'images/char-horn-girl.png',
+        playerGirl: 'images/char-horn-girl.png',
+        playerBoy: 'images/char-boy.png',
+        gameMusic: 'audio/chiptune.ogg',
+        collisionSound: 'audio/collision.wav',
+        successSound: 'audio/success.ogg',
+        gameOverSound: 'audio/jingle.mp3'
+    },
+    avatar,
+    collisionCoordinates = [],
+    collisionWithEnemy = false,
+    collisionWithWater = false,
+    score = 0,
+    gameHasStarted = false,
+    platformBounds = {
+        left: 0,
+        right: 404,
+        up: -23,
+        down: 392
+    },
+    playerStartLocation = {
+        x: 202,
+        y: 392
+    },
+    keyIsDown = {
+        37: false,
+        38: false,
+        39: false,
+        40: false
+    };
 
 /*
- * HELPER FUNCTIONS
+ * FUNCTIONS
  */
 
 // Returns a random number between min (inclusive) and max (exclusive)
@@ -38,16 +66,6 @@ function getRandomArbitrary(min, max) {
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-// This variable is used to detect if a certain key
-// is currently being pressed down or not.
-var down = {
-    37: false,
-    38: false,
-    39: false,
-    40: false
-};
-
 
 // Basic Sound object without controls
 var Sound = function(src) {
@@ -65,10 +83,10 @@ var Sound = function(src) {
     };
 };
 
-var gameMusic = 'audio/chiptune.ogg';
-var collisionSound = new Sound('audio/collision.wav');
-var successSound = new Sound('audio/success.ogg');
-var gameOverSound = new Sound('audio/jingle.mp3');
+var gameMusic = url.gameMusic;
+var collisionSound = new Sound(url.collisionSound);
+var successSound = new Sound(url.successSound);
+var gameOverSound = new Sound(url.gameOverSound);
 
 
 /*
@@ -86,12 +104,12 @@ var Unit = function(imgURL, x, y) {
 // Enemies our player must avoid
 var Enemy = function() {
     // Randomise the speed of the bug
-    this.speed = getRandomArbitrary(0.2, 1) * 300;
+    this.speed = getRandomArbitrary(0.2, 1) * enemy.speed;
 
     // The bug will randomly start in one of the three lanes
     var y = getRandomIntInclusive(1, 3) * 83 - 23;
 
-    Unit.call(this, 'images/enemy-bug.png', -110, y);
+    Unit.call(this, url.enemy, -110, y);
 };
 
 Enemy.prototype = Object.create(Unit.prototype);
@@ -115,14 +133,14 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Handle collisions with player
-    if (this.x > player.x - 70 && this.x < player.x + 70 && this.y === player.y) {
+    if (this.x > player.x - enemy.hitbox && this.x < player.x + enemy.hitbox && this.y === player.y) {
         collisionWithEnemy = true;
         collisionCoordinates.push({x: player.x+12, y: player.y+120});
         collisionSound.play();
-        player.x = startX;
-        player.y = startY;
-        if (score >= 500) {
-            score -= 500;
+        player.x = playerStartLocation.x;
+        player.y = playerStartLocation.y;
+        if (score >= Math.abs(floatingScores.enemy)) {
+            score -= Math.abs(floatingScores.enemy);
         } else {
             score = 0;
         }
@@ -138,7 +156,7 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    Unit.call(this, 'images/char-horn-girl.png', startX, startY);
+    Unit.call(this, url.player, playerStartLocation.x, playerStartLocation.y);
 };
 
 
@@ -152,9 +170,9 @@ Player.prototype.update = function(dt) {
         collisionWithWater = true;
         collisionCoordinates.push({x: player.x+12, y: player.y+120});
         successSound.play();
-        player.x = startX;
-        player.y = startY;
-        score += 100;
+        player.x = playerStartLocation.x;
+        player.y = playerStartLocation.y;
+        score += floatingScores.water;
     }
 };
 
@@ -162,9 +180,9 @@ Player.prototype.render = function(avatar) {
     // Select a different avatar depending on
     // the player's choice on the main start menu.
     if (avatar === 'girl') {
-        ctx.drawImage(Resources.get('images/char-horn-girl.png'), this.x, this.y);
+        ctx.drawImage(Resources.get(url.playerGirl), this.x, this.y);
     } else if (avatar === 'boy') {
-        ctx.drawImage(Resources.get('images/char-boy.png'), this.x, this.y);
+        ctx.drawImage(Resources.get(url.playerBoy), this.x, this.y);
     }
 };
 
@@ -175,27 +193,27 @@ Player.prototype.render = function(avatar) {
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'left':
-            if (this.x > bounds.left && down['37'] === false && startGame) {
+            if (this.x > platformBounds.left && keyIsDown['37'] === false && gameHasStarted) {
                 this.x -= 101;
-                down['37'] = true;
+                keyIsDown['37'] = true;
             }
             break;
         case 'up':
-            if (this.y > bounds.up && down['38'] === false && startGame) {
+            if (this.y > platformBounds.up && keyIsDown['38'] === false && gameHasStarted) {
                 this.y -= 83;
-                down['38'] = true;
+                keyIsDown['38'] = true;
             }
             break;
         case 'right':
-            if (this.x < bounds.right && down['39'] === false && startGame) {
+            if (this.x < platformBounds.right && keyIsDown['39'] === false && gameHasStarted) {
                 this.x += 101;
-                down['39'] = true;
+                keyIsDown['39'] = true;
             }
             break;
         case 'down':
-            if (this.y < bounds.down && down['40'] === false && startGame) {
+            if (this.y < platformBounds.down && keyIsDown['40'] === false && gameHasStarted) {
                 this.y += 83;
-                down['40'] = true;
+                keyIsDown['40'] = true;
             }
             break;
         default:
@@ -233,5 +251,5 @@ document.addEventListener('keydown', function(e) {
 });
 
 document.addEventListener('keyup', function(e) {
-    down[e.keyCode] = false;
+    keyIsDown[e.keyCode] = false;
 });
