@@ -10,6 +10,10 @@ At the beginning of the game, you can choose either one of two avatars: a girl o
 
 Each time you reach the water your score increases by 100 points. But beware! To reach the water you have to cross a deadly motorway used by gigantic mutant bugs dotted with super-speed (some of them at least)! Every time you hit one of those bugs you lose 500 points.
 
+###Controls
+
+Use the **arrow keys** to move your character.
+
 ##Technologies used
 
 - HTML5 canvas
