@@ -2,10 +2,6 @@
  * GAME PARAMETERS
  */
 var gameDuration = 30000,
-    enemy = {
-        speed: 300,
-        hitbox: 70
-    },
     colours = {
         finalScore: "#eb3126",
         minusScore: "#b30000",
@@ -40,10 +36,6 @@ var gameDuration = 30000,
         right: 404,
         up: -23,
         down: 392
-    },
-    playerStartLocation = {
-        x: 202,
-        y: 392
     },
     keyIsDown = {
         37: false,
@@ -104,7 +96,8 @@ var Unit = function(imgURL, x, y) {
 // Enemies our player must avoid
 var Enemy = function() {
     // Randomise the speed of the bug
-    this.speed = getRandomArbitrary(0.2, 1) * enemy.speed;
+    this.speed = getRandomArbitrary(0.2, 1) * 300;
+    this.hitbox = 70;
 
     // The bug will randomly start in one of the three lanes
     var y = getRandomIntInclusive(1, 3) * 83 - 23;
@@ -133,12 +126,12 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Handle collisions with player
-    if (this.x > player.x - enemy.hitbox && this.x < player.x + enemy.hitbox && this.y === player.y) {
+    if (this.x > player.x - this.hitbox && this.x < player.x + this.hitbox && this.y === player.y) {
         collisionWithEnemy = true;
         collisionCoordinates.push({x: player.x+12, y: player.y+120});
         collisionSound.play();
-        player.x = playerStartLocation.x;
-        player.y = playerStartLocation.y;
+        player.x = 202;
+        player.y = 392;
         if (score >= Math.abs(floatingScores.enemy)) {
             score -= Math.abs(floatingScores.enemy);
         } else {
@@ -156,7 +149,7 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    Unit.call(this, url.player, playerStartLocation.x, playerStartLocation.y);
+    Unit.call(this, url.player, 202, 392);
 };
 
 
@@ -166,12 +159,12 @@ Player.prototype.constructor = Player;
 Player.prototype.update = function(dt) {
     // If the player reaches the water,
     // he wins and goes back to the starting position.
-    if (player.y === -23) {
+    if (this.y === -23) {
         collisionWithWater = true;
-        collisionCoordinates.push({x: player.x+12, y: player.y+120});
+        collisionCoordinates.push({x: this.x+12, y: this.y+120});
         successSound.play();
-        player.x = playerStartLocation.x;
-        player.y = playerStartLocation.y;
+        this.x = 202;
+        this.y = 392;
         score += floatingScores.water;
     }
 };
@@ -231,7 +224,7 @@ Player.prototype.handleInput = function(key) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
-for (i = 0; i < 3; i++) {
+for (var i = 0; i < 3; i++) {
     allEnemies.push(new Enemy());
 }
 var player = new Player();

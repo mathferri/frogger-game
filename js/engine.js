@@ -335,8 +335,8 @@ var Engine = (function(global) {
     function launchGame() {
         // Reset game variables
         score = 0;
-        player.x = playerStartLocation.x;
-        player.y = playerStartLocation.y;
+        player.x = 202;
+        player.y = 392;
         allEnemies = [];
         for (i = 0; i < 3; i++) {
             allEnemies.push(new Enemy());
