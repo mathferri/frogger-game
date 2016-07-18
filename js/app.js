@@ -170,13 +170,7 @@ Player.prototype.update = function(dt) {
 };
 
 Player.prototype.render = function(avatar) {
-    // Select a different avatar depending on
-    // the player's choice on the main start menu.
-    if (avatar === 'girl') {
-        ctx.drawImage(Resources.get(url.playerGirl), this.x, this.y);
-    } else if (avatar === 'boy') {
-        ctx.drawImage(Resources.get(url.playerBoy), this.x, this.y);
-    }
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 // Player movement.

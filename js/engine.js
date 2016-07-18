@@ -317,12 +317,12 @@ var Engine = (function(global) {
         // Press G for girl and B for boy
         document.addEventListener('keyup', function(e) {
             if (e.keyCode === 71 && !gameHasStarted && !gameOverScreenIsOn) {
-                avatar = 'girl';
+                player.sprite = url.playerGirl;
                 gameHasStarted = true;
                 launchGame();
             }
             if (e.keyCode === 66 && !gameHasStarted && !gameOverScreenIsOn) {
-                avatar = 'boy';
+                player.sprite = url.playerBoy;
                 gameHasStarted = true;
                 launchGame();
             }
