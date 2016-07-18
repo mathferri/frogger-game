@@ -15,13 +15,14 @@ Use the **arrow keys** to move your character.
 
 ##Installation
 
-The game can be played online without installing anything here: [**PLAY THE GAME**](http://antonykwok.com/frogger-game)
+The game can be played online without installing anything here:
+[**PLAY THE GAME**](http://antonykwok.com/frogger-game)
 
 Should you choose to install the game on your computer, you can simply:
 
-- [download the code](https://github.com/AntonyKwok/frogger-game/archive/master.zip)
-- unzip `master.zip`
-- open `index.html`
+- [Download the code](https://github.com/AntonyKwok/frogger-game/archive/master.zip)
+- Unzip `master.zip`
+- Open `index.html`
 
 ##Technologies used
 
@@ -33,9 +34,9 @@ Should you choose to install the game on your computer, you can simply:
 
 [Antony Kwok](http://antonykwok.com)
 
-## License
+##License
 
-###MIT License
+**MIT License**
 
 **Copyright © 2016 Antony Kwok**
 
